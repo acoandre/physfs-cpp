@@ -1,15 +1,12 @@
 #pragma once
-
 #ifdef PHYSFS_CPP_STATIC
     #define PHYSFS_LIB_API
-
 #elif _WIN32 || defined __CYGWIN__ || defined __MINGW32__
     #ifdef PHYSFS_EXPORT_LIB
         #define PHYSFS_LIB_API __declspec(dllexport)
     #else
         #define PHYSFS_LIB_API __declspec(dllimport)
     #endif
-
 #else
   #if __GNUC__ >= 4
     #define PHYSFS_LIB_API __attribute__ ((visibility ("default")))
