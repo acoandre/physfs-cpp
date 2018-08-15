@@ -137,7 +137,7 @@ PhysFS::enumerateFiles(const std::string& directory) noexcept
 	StringList dirs;
 
 	auto physfs_dirs = PHYSFS_enumerateFiles(directory.c_str());
-	for (char** path = physfs_dirs; path != nullptr; ++path)
+	for (char** path = physfs_dirs; *path != nullptr; ++path)
 	{
 		dirs.push_back(*path);
 	}
