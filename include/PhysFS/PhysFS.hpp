@@ -90,7 +90,7 @@ namespace PhysFS
 	PHYSFS_LIB_API std::string getBaseDir();
 	PHYSFS_LIB_API std::string getPrefDir(const std::string& org_name, const std::string& app_name);
 	PHYSFS_LIB_API std::string getWriteDir();
-	PHYSFS_LIB_API void setWriteDir(const std::string& new_dir) noexcept;
+	PHYSFS_LIB_API IOResult setWriteDir(const std::string& new_dir) noexcept;
 	PHYSFS_LIB_API int mkdir(const std::string& dir_name) noexcept;
 	PHYSFS_LIB_API int deleteFile(const std::string& filename) noexcept;
 	PHYSFS_LIB_API std::string getRealDir(const std::string& filename);

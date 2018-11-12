@@ -80,9 +80,11 @@ void PhysFS::getCdRomDirs(StringCallback callback, void * extra) noexcept
 	PHYSFS_getCdRomDirsCallback(callback, extra);
 }
 
-void PhysFS::setWriteDir(const std::string& new_dir) noexcept
+PhysFS::IOResult PhysFS::setWriteDir(const std::string& new_dir) noexcept
 {
-	PHYSFS_setWriteDir(new_dir.c_str());
+	return
+	PHYSFS_setWriteDir(new_dir.c_str())
+	? IOResult::PHYSFS_OK : IOResult::PHYSFS_ERROR;
 }
 
 void PhysFS::unmount(const std::string& old_dir) noexcept
