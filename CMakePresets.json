@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+	  "hidden": true,
+      "displayName": "Base Config",
+      "description": "Base build using Visual Studio 16 2019 generator",
+      "generator": "Visual Studio 16 2019",
+	  "architecture": "x64",
+      "cacheVariables": {
+		"CMAKE_DEBUG_POSTFIX": {
+          "type": "STRING",
+          "value": "_d"
+        },
+		"CMAKE_FIND_PACKAGE_PREFER_CONFIG": true
+      }
+    },
+    {
+      "name": "jenkins_internal",
+      "inherits": "base",
+      "displayName": "Internal Jenkins Config",
+      "description": "Internal Jenkins build using Visual Studio 16 2019 generator",
+      "binaryDir": ".",
+      "cacheVariables": {
+		"CMAKE_INSTALL_PREFIX": {
+          "type": "PATH",
+          "value": "../install"
+        }
+      }
+    }
+  ]
+}

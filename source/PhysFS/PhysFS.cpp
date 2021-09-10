@@ -1,5 +1,6 @@
+#include "PhysFS/PhysFS.hpp"
+
 #include <cstring>
-#include "PhysFS.hpp"
 
 std::string PhysFS::getBaseDir()
 {
