@@ -2,18 +2,21 @@
 
 #include <cstring>
 
-std::string PhysFS::getBaseDir()
+
+std::string_view
+PhysFS::getBaseDir()
 {
     return PHYSFS_getBaseDir();
 }
 
-std::string PhysFS::getPrefDir(const std::string& org_name, const std::string& app_name)
+std::string_view
+PhysFS::getPrefDir(std::string_view org_name, std::string_view app_name)
 {
-    return PHYSFS_getPrefDir(org_name.c_str(), app_name.c_str());
+    return PHYSFS_getPrefDir(org_name.data(), app_name.data());
 }
 
-
-std::string PhysFS::getWriteDir()
+std::string_view
+PhysFS::getWriteDir()
 {
     return PHYSFS_getWriteDir();
 }
@@ -53,7 +56,8 @@ PhysFS::supportedArchiveTypes()
     return types;
 }
 
-std::string PhysFS::getDirSeparator()
+std::string_view
+PhysFS::getDirSeparator()
 {
     return PHYSFS_getDirSeparator();
 }
@@ -83,16 +87,17 @@ void PhysFS::getCdRomDirs(StringCallback callback, void* extra) noexcept
     PHYSFS_getCdRomDirsCallback(callback, extra);
 }
 
-PhysFS::IOResult PhysFS::setWriteDir(const std::string& new_dir) noexcept
+PhysFS::IOResult
+PhysFS::setWriteDir(std::string_view new_dir) noexcept
 {
-    return PHYSFS_setWriteDir(new_dir.c_str())
+    return PHYSFS_setWriteDir(new_dir.data())
              ? IOResult::PHYSFS_OK
              : IOResult::PHYSFS_ERROR;
 }
 
-void PhysFS::unmount(const std::string& old_dir) noexcept
+void PhysFS::unmount(std::string_view old_dir) noexcept
 {
-    PHYSFS_unmount(old_dir.c_str());
+    PHYSFS_unmount(old_dir.data());
 }
 
 PhysFS::StringList
@@ -114,34 +119,37 @@ void PhysFS::getSearchPath(PhysFS::StringCallback callback, void* data) noexcept
     PHYSFS_getSearchPathCallback(callback, data);
 }
 
-void PhysFS::setSaneConfig(
-    const std::string& org_name, const std::string& game_name, const std::string& archive_ext,
-    bool include_cdroms, bool archives_first) noexcept
+void PhysFS::setSaneConfig(std::string_view org_name,
+                           std::string_view game_name,
+                           std::string_view archive_ext,
+                           bool             include_cdroms,
+                           bool             archives_first) noexcept
 {
-    PHYSFS_setSaneConfig(org_name.c_str(), game_name.c_str(), archive_ext.c_str(), include_cdroms, archives_first);
+    PHYSFS_setSaneConfig(org_name.data(), game_name.data(), archive_ext.data(), include_cdroms, archives_first);
 }
 
-int PhysFS::mkdir(const std::string& dir_name) noexcept
+int PhysFS::mkdir(std::string_view dir_name) noexcept
 {
-    return PHYSFS_mkdir(dir_name.c_str());
+    return PHYSFS_mkdir(dir_name.data());
 }
 
-int PhysFS::deleteFile(const std::string& filename) noexcept
+int PhysFS::deleteFile(std::string_view filename) noexcept
 {
-    return PHYSFS_delete(filename.c_str());
+    return PHYSFS_delete(filename.data());
 }
 
-std::string PhysFS::getRealDir(const std::string& filename)
+std::string_view
+PhysFS::getRealDir(std::string_view filename)
 {
-    return PHYSFS_getRealDir(filename.c_str());
+    return PHYSFS_getRealDir(filename.data());
 }
 
 PhysFS::StringList
-PhysFS::enumerateFiles(const std::string& directory) noexcept
+PhysFS::enumerateFiles(std::string_view directory) noexcept
 {
     StringList dirs;
 
-    auto physfs_dirs = PHYSFS_enumerateFiles(directory.c_str());
+    auto physfs_dirs = PHYSFS_enumerateFiles(directory.data());
     for (char** path = physfs_dirs; *path != nullptr; ++path)
     {
         dirs.push_back(*path);
@@ -151,36 +159,36 @@ PhysFS::enumerateFiles(const std::string& directory) noexcept
     return dirs;
 }
 
-void PhysFS::enumerateFiles(const std::string& directory, EnumFilesCallback callback, void* data) noexcept
+void PhysFS::enumerateFiles(std::string_view directory, EnumFilesCallback callback, void* data) noexcept
 {
-    PHYSFS_enumerate(directory.c_str(), callback, data);
+    PHYSFS_enumerate(directory.data(), callback, data);
 }
 
-bool PhysFS::exists(const std::string& filename) noexcept
+bool PhysFS::exists(std::string_view filename) noexcept
 {
-    return PHYSFS_exists(filename.c_str());
+    return PHYSFS_exists(filename.data());
 }
 
 PhysFS::MetaData
-PhysFS::getMetaData(const std::string& filename) noexcept
+PhysFS::getMetaData(std::string_view filename) noexcept
 {
     MetaData meta;
-    PHYSFS_stat(filename.c_str(), &meta);
+    PHYSFS_stat(filename.data(), &meta);
     return meta;
 }
 
-bool PhysFS::isDirectory(const std::string& filename) noexcept
+bool PhysFS::isDirectory(std::string_view filename) noexcept
 {
     return getMetaData(filename).filetype == FileType::PHYSFS_FILETYPE_DIRECTORY;
 }
 
-bool PhysFS::isSymbolicLink(const std::string& filename) noexcept
+bool PhysFS::isSymbolicLink(std::string_view filename) noexcept
 {
     return getMetaData(filename).filetype == FileType::PHYSFS_FILETYPE_SYMLINK;
 }
 
 PhysFS::sint64
-PhysFS::getLastModTime(const std::string& filename) noexcept
+PhysFS::getLastModTime(std::string_view filename) noexcept
 {
     return getMetaData(filename).modtime;
 }
@@ -204,9 +212,9 @@ PhysFS::setAllocator(const Allocator* allocator) noexcept
 }
 
 PhysFS::IOResult
-PhysFS::mount(const std::string& dir, const std::string& mount_point, bool append_to_path) noexcept
+PhysFS::mount(std::string_view dir, std::string_view mount_point, bool append_to_path) noexcept
 {
-    return PHYSFS_mount(dir.c_str(), mount_point.c_str(), append_to_path) != 0
+    return PHYSFS_mount(dir.data(), mount_point.data(), append_to_path) != 0
              ? IOResult::PHYSFS_OK
              : IOResult::PHYSFS_ERROR;
 }
@@ -217,27 +225,29 @@ PhysFS::getLastErrorCode() noexcept
     return PHYSFS_getLastErrorCode();
 }
 
-std::string PhysFS::getMountPoint(const std::string& dir)
+std::string_view
+PhysFS::getMountPoint(std::string_view dir)
 {
-    return PHYSFS_getMountPoint(dir.c_str());
+    return PHYSFS_getMountPoint(dir.data());
 }
 
-PHYSFS_File* PhysFS::open(const std::string& file_name, PhysFS::IOMode mode)
+PHYSFS_File*
+PhysFS::open(std::string_view file_name, PhysFS::IOMode mode)
 {
-    PHYSFS_File* handle;
+    PHYSFS_File* handle = nullptr;
     switch (mode)
     {
     case IOMode::READ:
-        handle = PHYSFS_openRead(file_name.c_str());
+        handle = PHYSFS_openRead(file_name.data());
         break;
 
 
     case IOMode::APPEND:
-        handle = PHYSFS_openAppend(file_name.c_str());
+        handle = PHYSFS_openAppend(file_name.data());
         break;
 
     case IOMode::WRITE:
-        handle = PHYSFS_openWrite(file_name.c_str());
+        handle = PHYSFS_openWrite(file_name.data());
         break;
     }
 
@@ -259,7 +269,8 @@ bool PhysFS::close(PHYSFS_File* file) noexcept
     return false;
 }
 
-PhysFS::sint64 PhysFS::writeBytes(PHYSFS_File* handle, const void* buffer, PhysFS::uint64 length)
+PhysFS::sint64
+PhysFS::writeBytes(PHYSFS_File* handle, const void* buffer, PhysFS::uint64 length)
 {
     if (handle)
     {
@@ -269,12 +280,14 @@ PhysFS::sint64 PhysFS::writeBytes(PHYSFS_File* handle, const void* buffer, PhysF
     return 0;
 }
 
-PhysFS::sint64 PhysFS::readBytes(PHYSFS_File* handle, void* buffer, PhysFS::uint64 length)
+PhysFS::sint64
+PhysFS::readBytes(PHYSFS_File* handle, void* buffer, PhysFS::uint64 length)
 {
     return PHYSFS_readBytes(handle, buffer, length);
 }
 
-PhysFS::sint64 PhysFS::length(PHYSFS_File* handle)
+PhysFS::sint64
+PhysFS::length(PHYSFS_File* handle)
 {
     return PHYSFS_fileLength(handle);
 }

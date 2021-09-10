@@ -24,9 +24,9 @@
  * PhysFS++.
  * PhysFS++ is a C++ wrapper for the PhysFS library. It exposes
  * the libraries original functionality through the PhysFS
- * namespace. These functions are simple and generally only 
+ * namespace. These functions are simple and generally only
  * proxy the call to the original C library. The function names
- * have been retained so the PhysFS original documentation is 
+ * have been retained so the PhysFS original documentation is
  * valid and should be used to explore the pseudo-fs functionality.
  * Most of the changes are the use of std::string instead of a basic
  * c string. This library was inspired by https://github.com/kahowell/physfs-cpp
@@ -73,7 +73,7 @@ using ArchiveInfoList   = std::vector<ArchiveInfo>;
 PHYSFS_LIB_API IOResult init(char const* argv0) noexcept;
 PHYSFS_LIB_API IOResult deinit() noexcept;
 
-PHYSFS_LIB_API PHYSFS_File* open(const std::string& file_name, IOMode mode);
+PHYSFS_LIB_API PHYSFS_File* open(std::string_view file_name, IOMode mode);
 PHYSFS_LIB_API bool         close(PHYSFS_File* file) noexcept;
 
 PHYSFS_LIB_API sint64 writeBytes(PHYSFS_File* handle, const void* buffer, uint64 length);
@@ -81,14 +81,14 @@ PHYSFS_LIB_API sint64 readBytes(PHYSFS_File* handle, void* buffer, uint64 length
 PHYSFS_LIB_API sint64 length(PHYSFS_File* handle);
 
 PHYSFS_LIB_API int  seek(PHYSFS_file* handle, uint64 pos);
-PHYSFS_LIB_API void setSaneConfig(const std::string& org_name,
-                                  const std::string& game_name,
-                                  const std::string& archiveExt,
-                                  bool               includeCdRoms,
-                                  bool               archivesFirst) noexcept;
+PHYSFS_LIB_API void setSaneConfig(std::string_view org_name,
+                                  std::string_view game_name,
+                                  std::string_view archiveExt,
+                                  bool             includeCdRoms,
+                                  bool             archivesFirst) noexcept;
 
-PHYSFS_LIB_API IOResult mount(const std::string& dir, const std::string& mount_point, bool append_to_path) noexcept;
-PHYSFS_LIB_API void     unmount(const std::string& old_dir) noexcept;
+PHYSFS_LIB_API IOResult mount(std::string_view dir, std::string_view mount_point, bool append_to_path) noexcept;
+PHYSFS_LIB_API void     unmount(std::string_view old_dir) noexcept;
 
 PHYSFS_LIB_API ArchiveInfoList supportedArchiveTypes();
 
@@ -97,42 +97,42 @@ PHYSFS_LIB_API void       getCdRomDirs(StringCallback callback, void* extra) noe
 PHYSFS_LIB_API StringList getSearchPath();
 PHYSFS_LIB_API void       getSearchPath(StringCallback callback, void* data) noexcept;
 PHYSFS_LIB_API Version    getLinkedVersion() noexcept;
-PHYSFS_LIB_API std::string getDirSeparator();
+PHYSFS_LIB_API std::string_view getDirSeparator();
 
 PHYSFS_LIB_API void permitSymbolicLinks(bool allow) noexcept;
 
-PHYSFS_LIB_API std::string getBaseDir();
-PHYSFS_LIB_API std::string getPrefDir(const std::string& org_name, const std::string& app_name);
-PHYSFS_LIB_API std::string getWriteDir();
+PHYSFS_LIB_API std::string_view getBaseDir();
+PHYSFS_LIB_API std::string_view getPrefDir(std::string_view org_name, std::string_view app_name);
+PHYSFS_LIB_API std::string_view getWriteDir();
 
-PHYSFS_LIB_API IOResult setWriteDir(const std::string& new_dir) noexcept;
+PHYSFS_LIB_API IOResult setWriteDir(std::string_view new_dir) noexcept;
 
-PHYSFS_LIB_API int mkdir(const std::string& dir_name) noexcept;
-PHYSFS_LIB_API int deleteFile(const std::string& filename) noexcept;
+PHYSFS_LIB_API int mkdir(std::string_view dir_name) noexcept;
+PHYSFS_LIB_API int deleteFile(std::string_view filename) noexcept;
 
-PHYSFS_LIB_API std::string getRealDir(const std::string& filename);
-PHYSFS_LIB_API StringList  enumerateFiles(const std::string& directory) noexcept;
-PHYSFS_LIB_API void        enumerateFiles(const std::string& directory, EnumFilesCallback callback, void* data) noexcept;
+PHYSFS_LIB_API std::string_view getRealDir(std::string_view filename);
+PHYSFS_LIB_API StringList       enumerateFiles(std::string_view directory) noexcept;
+PHYSFS_LIB_API void             enumerateFiles(std::string_view directory, EnumFilesCallback callback, void* data) noexcept;
 
-PHYSFS_LIB_API bool exists(const std::string& filename) noexcept;
-PHYSFS_LIB_API bool isDirectory(const std::string& filename) noexcept;
+PHYSFS_LIB_API bool exists(std::string_view filename) noexcept;
+PHYSFS_LIB_API bool isDirectory(std::string_view filename) noexcept;
 
-PHYSFS_LIB_API MetaData getMetaData(const std::string& meta) noexcept;
-PHYSFS_LIB_API bool     isSymbolicLink(const std::string& filename) noexcept;
+PHYSFS_LIB_API MetaData getMetaData(std::string_view meta) noexcept;
+PHYSFS_LIB_API bool     isSymbolicLink(std::string_view filename) noexcept;
 
-PHYSFS_LIB_API sint64 getLastModTime(const std::string& filename) noexcept;
+PHYSFS_LIB_API sint64 getLastModTime(std::string_view filename) noexcept;
 PHYSFS_LIB_API bool   isInititalised() noexcept;
 PHYSFS_LIB_API bool   symbolicLinksPermitted() noexcept;
 
 PHYSFS_LIB_API IOResult         setAllocator(Allocator const* allocator) noexcept;
 PHYSFS_LIB_API FileIO_ErrorCode getLastErrorCode() noexcept;
-PHYSFS_LIB_API std::string getMountPoint(const std::string& dir);
+PHYSFS_LIB_API std::string_view getMountPoint(std::string_view dir);
 
 /**
  * Util.
  * Utility functions for swapping endianness and managing UTF
- * strings. They simply proxy calls to the underlying PhysFS 
- * library. They have been wrapped inside their own nested namespace 
+ * strings. They simply proxy calls to the underlying PhysFS
+ * library. They have been wrapped inside their own nested namespace
  * to create a better level of separation.
  */
 namespace Util
